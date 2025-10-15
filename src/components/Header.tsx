@@ -1,14 +1,29 @@
-import React, { useState } from 'react';
-import { Search, Menu, User, Bell, MessageCircle, Music, ChevronDown } from 'lucide-react';
+import React, { useState } from "react";
+import {
+  Search,
+  Menu,
+  User,
+  Bell,
+  MessageCircle,
+  Music,
+  ChevronDown,
+} from "lucide-react";
 
 interface HeaderProps {
   currentPage: string;
-  onPageChange: (page: 'search' | 'profile' | 'jobs' | 'dashboard') => void;
-  userType: 'client' | 'musician' | 'admin';
-  onUserTypeChange: (type: 'client' | 'musician' | 'admin') => void;
+  onPageChange: (
+    page: "search" | "profile" | "jobs" | "dashboard" | "settings"
+  ) => void;
+  userType: "client" | "musician" | "admin";
+  onUserTypeChange: (type: "client" | "musician" | "admin") => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange, userType, onUserTypeChange }) => {
+const Header: React.FC<HeaderProps> = ({
+  currentPage,
+  onPageChange,
+  userType,
+  onUserTypeChange,
+}) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
@@ -16,49 +31,58 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange, userType, on
     <header className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md z-50 border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-              <Music className="w-6 h-6 text-white" />
+            
+         <img
+  src="/images/molo.png"
+  alt="Anchor Logo"
+  className="w-40 h-6 object-contain"
+/>
+
             </div>
-            <div className="hidden sm:block">
-              <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Anchormusic Connects
-              </h1>
-            </div>
-          </div>
+    
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             <button
-              onClick={() => onPageChange('search')}
+              onClick={() => onPageChange("search")}
               className={`text-sm font-medium transition-colors ${
-                currentPage === 'search' 
-                  ? 'text-blue-600' 
-                  : 'text-gray-600 hover:text-blue-600'
+                currentPage === "search"
+                  ? "text-blue-600"
+                  : "text-gray-600 hover:text-blue-600"
               }`}
             >
               Browse Musicians
             </button>
             <button
-              onClick={() => onPageChange('jobs')}
+              onClick={() => onPageChange("jobs")}
               className={`text-sm font-medium transition-colors ${
-                currentPage === 'jobs' 
-                  ? 'text-blue-600' 
-                  : 'text-gray-600 hover:text-blue-600'
+                currentPage === "jobs"
+                  ? "text-blue-600"
+                  : "text-gray-600 hover:text-blue-600"
               }`}
             >
-              {userType === 'client' ? 'Post Jobs' : 'Find Jobs'}
+              {userType === "client" ? "Post Jobs" : "Find Jobs"}
             </button>
             <button
-              onClick={() => onPageChange('dashboard')}
+              onClick={() => onPageChange("dashboard")}
               className={`text-sm font-medium transition-colors ${
-                currentPage === 'dashboard' 
-                  ? 'text-blue-600' 
-                  : 'text-gray-600 hover:text-blue-600'
+                currentPage === "dashboard"
+                  ? "text-blue-600"
+                  : "text-gray-600 hover:text-blue-600"
               }`}
             >
               Dashboard
+            </button>
+            <button
+              onClick={() => onPageChange("settings")}
+              className={`text-sm font-medium transition-colors ${
+                currentPage === "settings"
+                  ? "text-blue-600"
+                  : "text-gray-600 hover:text-blue-600"
+              }`}
+            >
+              Settings
             </button>
           </nav>
 
@@ -73,12 +97,12 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange, userType, on
                 <span className="capitalize">{userType}</span>
                 <ChevronDown className="w-4 h-4" />
               </button>
-              
+
               {showUserMenu && (
                 <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
                   <button
                     onClick={() => {
-                      onUserTypeChange('client');
+                      onUserTypeChange("client");
                       setShowUserMenu(false);
                     }}
                     className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors"
@@ -87,7 +111,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange, userType, on
                   </button>
                   <button
                     onClick={() => {
-                      onUserTypeChange('musician');
+                      onUserTypeChange("musician");
                       setShowUserMenu(false);
                     }}
                     className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors"
@@ -96,7 +120,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange, userType, on
                   </button>
                   <button
                     onClick={() => {
-                      onUserTypeChange('admin');
+                      onUserTypeChange("admin");
                       setShowUserMenu(false);
                     }}
                     className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors"
@@ -123,10 +147,23 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange, userType, on
               </span>
             </button>
 
-            {/* Profile */}
-            <button className="p-2 text-gray-600 hover:text-blue-600 transition-colors">
-              <User className="w-5 h-5" />
-            </button>
+            {/* Profile (go to Settings) */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                className="lg:hidden text-gray-700"
+              >
+                <Menu className="w-6 h-6" />
+              </button>
+            </div>
+
+            <div className="flex items-center space-x-3">
+              <img
+                src="/images/Anchor.png"
+                alt="Anchor Logo"
+                className="w-16 h-16 object-contain"
+              />
+            </div>
 
             {/* Mobile menu button */}
             <button
@@ -144,42 +181,49 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange, userType, on
             <nav className="flex flex-col space-y-2">
               <button
                 onClick={() => {
-                  onPageChange('search');
+                  onPageChange("search");
                   setShowMobileMenu(false);
                 }}
                 className={`text-left py-2 text-sm font-medium transition-colors ${
-                  currentPage === 'search' 
-                    ? 'text-blue-600' 
-                    : 'text-gray-600'
+                  currentPage === "search" ? "text-blue-600" : "text-gray-600"
                 }`}
               >
                 Browse Musicians
               </button>
               <button
                 onClick={() => {
-                  onPageChange('jobs');
+                  onPageChange("jobs");
                   setShowMobileMenu(false);
                 }}
                 className={`text-left py-2 text-sm font-medium transition-colors ${
-                  currentPage === 'jobs' 
-                    ? 'text-blue-600' 
-                    : 'text-gray-600'
+                  currentPage === "jobs" ? "text-blue-600" : "text-gray-600"
                 }`}
               >
-                {userType === 'client' ? 'Post Jobs' : 'Find Jobs'}
+                {userType === "client" ? "Post Jobs" : "Find Jobs"}
               </button>
               <button
                 onClick={() => {
-                  onPageChange('dashboard');
+                  onPageChange("dashboard");
                   setShowMobileMenu(false);
                 }}
                 className={`text-left py-2 text-sm font-medium transition-colors ${
-                  currentPage === 'dashboard' 
-                    ? 'text-blue-600' 
-                    : 'text-gray-600'
+                  currentPage === "dashboard"
+                    ? "text-blue-600"
+                    : "text-gray-600"
                 }`}
               >
                 Dashboard
+              </button>
+              <button
+                onClick={() => {
+                  onPageChange("settings");
+                  setShowMobileMenu(false);
+                }}
+                className={`text-left py-2 text-sm font-medium transition-colors ${
+                  currentPage === "settings" ? "text-blue-600" : "text-gray-600"
+                }`}
+              >
+                Settings
               </button>
             </nav>
           </div>
