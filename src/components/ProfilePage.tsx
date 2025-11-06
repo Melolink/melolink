@@ -300,39 +300,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ profile, onBack, userType }) 
               </div>
             </div>
           )}
-
-          {/* Reviews */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Reviews ({reviews.length})</h2>
-            <div className="space-y-6">
-              {reviews.map((review) => (
-                <div key={review.id} className="border-b border-gray-200 last:border-b-0 pb-6 last:pb-0">
-                  <div className="flex items-start space-x-4">
-                    <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
-                      <span className="text-gray-600 font-medium text-sm">
-                        {review.clientName.charAt(0)}
-                      </span>
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-2 mb-2">
-                        <h4 className="font-medium text-gray-900">{review.clientName}</h4>
-                        <div className="flex items-center">
-                          {[...Array(review.rating)].map((_, i) => (
-                            <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                          ))}
-                        </div>
-                        <span className="text-gray-500 text-sm">• {review.date}</span>
-                      </div>
-                      <p className="text-gray-600 mb-2">{review.comment}</p>
-                      <span className="text-blue-600 text-sm font-medium">{review.event}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+        
         </div>
-
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Quick Actions */}
@@ -412,11 +381,11 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ profile, onBack, userType }) 
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
                 <Phone className="w-5 h-5 text-gray-400" />
-                <span className="text-gray-600">+234 XXX XXX XXXX</span>
+                <span className="text-gray-600">+234 906 370 4342</span>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="w-5 h-5 text-gray-400" />
-                <span className="text-gray-600">contact@musician.com</span>
+                <span className="text-gray-600">davidhabakkuk984@gmail.com</span>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin className="w-5 h-5 text-gray-400" />

@@ -1,41 +1,41 @@
-"use client";
-import React, { useState } from "react";
-import { Send, Smile, Search, Menu } from "lucide-react";
+'use client';
+
+import React, { useState } from 'react';
+import { Send, Smile, Search, ArrowLeft } from 'lucide-react';
 
 export default function ChatDashboard() {
   const [selectedChat, setSelectedChat] = useState<string | null>(null);
-  const [newMessage, setNewMessage] = useState("");
+  const [newMessage, setNewMessage] = useState('');
   const [showEmojis, setShowEmojis] = useState(false);
-  const [mobileMenu, setMobileMenu] = useState(false);
 
-  const emojis = ["😀", "😂", "🥰", "😎", "🔥", "👍", "❤️", "🤔", "🎉", "🙌"];
+  const emojis = ['😀', '😂', '🥰', '😎', '🔥', '👍', '❤️', '🤔', '🎉', '🙌'];
 
   const users = [
-    { id: "1", name: "David Habakkuk", avatar: "/user1.jpg" },
-    { id: "2", name: "Gbemisola", avatar: "/user2.jpg" },
-    { id: "3", name: "Sophie", avatar: "/user3.jpg" },
+    { id: '1', name: 'David Habakkuk', avatar: '/images/Melo.png' },
+    { id: '2', name: 'Gbemisola', avatar: '/user2.jpg' },
+    { id: '3', name: 'Sophie', avatar: '/user3.jpg' },
   ];
 
   const [chats, setChats] = useState<{
-    [key: string]: { id: number; text: string; sender: "user" | "bot" }[];
+    [key: string]: { id: number; text: string; sender: 'user' | 'bot' }[];
   }>({
-    "1": [{ id: 1, text: "Hey David 👋", sender: "bot" }],
-    "2": [{ id: 1, text: "Hi Gbemisola 😄", sender: "bot" }],
-    "3": [{ id: 1, text: "Hey Sophie!", sender: "bot" }],
+    '1': [{ id: 1, text: 'Hey, I am David 👋 and you?', sender: 'bot' }],
+    '2': [{ id: 1, text: 'Hi Gbemisola 😄', sender: 'bot' }],
+    '3': [{ id: 1, text: 'Hey Sophie!', sender: 'bot' }],
   });
 
   const handleSend = () => {
-    if (!selectedChat || newMessage.trim() === "") return;
+    if (!selectedChat || newMessage.trim() === '') return;
     const message = {
       id: Date.now(),
       text: newMessage,
-      sender: "user" as const,
+      sender: 'user' as const,
     };
     setChats((prevChats) => ({
       ...prevChats,
       [selectedChat]: [...(prevChats[selectedChat] || []), message],
     }));
-    setNewMessage("");
+    setNewMessage('');
   };
 
   const handleEmojiClick = (emoji: string) => {
@@ -46,59 +46,58 @@ export default function ChatDashboard() {
   const currentChat = selectedChat ? chats[selectedChat] || [] : [];
 
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
-      {/* Sidebar */}
+    <div className="flex h-screen bg-gradient-to-r from-[#7B2FFC] via-[#C55FFC] to-[#FFB347]">
+      {/* SIDEBAR */}
       <aside
-        className={`fixed lg:static top-0 left-0 h-full w-72 bg-white border-r shadow-sm flex flex-col transition-transform duration-300 z-20 ${
-          mobileMenu ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        className={`flex flex-col w-full sm:w-72 bg-white/90 backdrop-blur-md border-r shadow-md transition-all duration-300 ${
+          selectedChat ? 'hidden sm:flex' : 'flex'
         }`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b">
-          <h1 className="text-xl font-bold text-green-600">Chats</h1>
-          
-          <button
-            onClick={() => setMobileMenu(false)}
-            className="lg:hidden text-gray-500"
-          >
-            ✕
-          </button>
+        <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-[#7B2FFC] via-[#C55FFC] to-[#FFB347] text-white">
+          <div className="flex items-center gap-2">
+            <img
+              src="/images/Melo.png"
+              alt="Logo"
+              className="w-8 h-8 rounded-full border-2 border-white"
+            />
+            <h1 className="text-lg font-semibold">Chats</h1>
+          </div>
         </div>
 
-        {/* Search bar */}
-        <div className="p-3">
+        {/* Search */}
+        <div className="p-3 border-b">
           <div className="flex items-center bg-gray-100 rounded-full px-3 py-2">
             <Search className="w-4 h-4 text-gray-500" />
             <input
               type="text"
               placeholder="Search..."
-              className="flex-1 bg-transparent outline-none px-2 text-sm"
+              className="flex-1 bg-transparent outline-none px-2 text-sm text-gray-700"
             />
           </div>
         </div>
 
-        {/* Chat list */}
+        {/* User List */}
         <div className="flex-1 overflow-y-auto">
           {users.map((user) => (
             <div
               key={user.id}
-              onClick={() => {
-                setSelectedChat(user.id);
-                setMobileMenu(false);
-              }}
-              className={`flex items-center gap-3 p-3 cursor-pointer border-b hover:bg-green-50 transition ${
-                selectedChat === user.id ? "bg-green-100" : ""
+              onClick={() => setSelectedChat(user.id)}
+              className={`flex items-center gap-3 p-3 cursor-pointer border-b transition hover:bg-purple-50 ${
+                selectedChat === user.id ? 'bg-purple-100' : ''
               }`}
             >
               <img
                 src={user.avatar}
                 alt={user.name}
-                className="w-12 h-12 rounded-full border"
+                className="w-12 h-12 rounded-full border object-cover"
               />
-              <div>
-                <h3 className="font-semibold text-gray-800">{user.name}</h3>
+              <div className="min-w-0">
+                <h3 className="font-semibold text-gray-800 truncate">
+                  {user.name}
+                </h3>
                 <p className="text-sm text-gray-500 truncate">
-                  {chats[user.id]?.at(-1)?.text || "No messages yet"}
+                  {chats[user.id]?.at(-1)?.text || 'No messages yet'}
                 </p>
               </div>
             </div>
@@ -106,50 +105,56 @@ export default function ChatDashboard() {
         </div>
       </aside>
 
-      {/* Main Chat Area */}
-      <main className="flex-1 flex flex-col">
-        {/* Header */}
+      {/* MAIN CHAT */}
+      <main
+        className={`flex-1 flex flex-col bg-white/70 backdrop-blur-sm transition-all duration-300 ${
+          selectedChat ? 'flex' : 'hidden sm:flex'
+        }`}
+      >
         {selectedChat ? (
           <>
-            <div className="flex items-center gap-3 p-4 bg-white border-b shadow-sm">
+            {/* Chat Header */}
+            <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-[#7B2FFC] via-[#C55FFC] to-[#FFB347] text-white shadow-md sticky top-0 z-10">
               <button
-                onClick={() => setMobileMenu(true)}
-                className="lg:hidden text-gray-600"
+                onClick={() => setSelectedChat(null)}
+                className="sm:hidden p-2 rounded-full hover:bg-white/20 transition"
               >
-                <Menu className="w-6 h-6" />
+                <ArrowLeft className="w-6 h-6" />
               </button>
+
               <img
                 src={
                   users.find((u) => u.id === selectedChat)?.avatar ||
-                  "/default.jpg"
+                  '/default.jpg'
                 }
                 alt="avatar"
-                className="w-10 h-10 rounded-full border"
+                className="w-10 h-10 rounded-full border-2 border-white object-cover"
               />
-              <div>
-                <h3 className="font-semibold text-gray-900">
+
+              <div className="flex-1 min-w-0">
+                <h3 className="font-semibold truncate">
                   {users.find((u) => u.id === selectedChat)?.name}
                 </h3>
-                <p className="text-sm text-gray-500">Online</p>
+                <p className="text-sm text-gray-100">Online</p>
               </div>
             </div>
 
-            {/* Chat messages */}
-            <div className="flex-1 p-4 overflow-y-auto bg-gray-50 space-y-3">
+            {/* Chat Messages */}
+            <div className="flex-1 p-3 sm:p-4 overflow-y-auto space-y-3 bg-white h-[calc(100vh-140px)] sm:h-[calc(100vh-160px)]">
               {currentChat.map((msg) => (
                 <div
                   key={msg.id}
                   className={`flex ${
-                    msg.sender === "user"
-                      ? "justify-end text-right"
-                      : "justify-start text-left"
+                    msg.sender === 'user'
+                      ? 'justify-end text-right'
+                      : 'justify-start text-left'
                   }`}
                 >
                   <div
-                    className={`max-w-sm p-3 rounded-2xl text-sm ${
-                      msg.sender === "user"
-                        ? "bg-green-500 text-white rounded-br-none"
-                        : "bg-white text-gray-800 rounded-bl-none shadow"
+                    className={`max-w-[85%] sm:max-w-sm p-3 rounded-2xl text-sm break-words ${
+                      msg.sender === 'user'
+                        ? 'bg-[#7B2FFC] text-white rounded-br-none'
+                        : 'bg-gradient-to-r from-[#7B2FFC] via-[#C55FFC] to-[#FFB347] text-white shadow'
                     }`}
                   >
                     {msg.text}
@@ -160,7 +165,7 @@ export default function ChatDashboard() {
 
             {/* Emoji Picker */}
             {showEmojis && (
-              <div className="bg-white border-t flex flex-wrap p-2">
+              <div className="bg-white border-t flex flex-wrap p-2 fixed bottom-20 sm:bottom-[90px] left-0 right-0 z-10 shadow-md justify-center">
                 {emojis.map((emoji, index) => (
                   <button
                     key={index}
@@ -173,8 +178,8 @@ export default function ChatDashboard() {
               </div>
             )}
 
-            {/* Input */}
-            <div className="p-4 bg-white border-t flex items-center gap-3">
+            {/* Message Input */}
+            <div className="p-2 sm:p-4 bg-white/90 border-t flex items-center gap-2 sm:gap-3 sticky bottom-0 backdrop-blur-md">
               <button
                 onClick={() => setShowEmojis(!showEmojis)}
                 className="p-2 rounded-full hover:bg-gray-100"
@@ -186,22 +191,24 @@ export default function ChatDashboard() {
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 placeholder="Type a message..."
-                className="flex-1 px-4 py-2 rounded-full border focus:outline-none focus:ring-2 focus:ring-green-400"
+                className="flex-1 px-4 py-2 rounded-full border focus:outline-none focus:ring-2 focus:ring-[#C55FFC] text-sm sm:text-base bg-white/60"
               />
               <button
                 onClick={handleSend}
-                className="p-2 bg-green-500 hover:bg-green-600 text-white rounded-full transition"
+                className="p-2 sm:p-3 bg-[#C55FFC] hover:bg-[#7B2FFC] text-white rounded-full transition"
               >
                 <Send className="w-5 h-5" />
               </button>
             </div>
           </>
         ) : (
-          <div className="flex flex-1 flex-col items-center justify-center text-gray-400">
-            <h2 className="text-xl font-semibold mb-2">
+          <div className="flex flex-1 flex-col items-center justify-center text-white text-center p-6">
+            <h2 className="text-lg sm:text-xl font-semibold mb-2 drop-shadow-md">
               Select a chat to start messaging
             </h2>
-            <p className="text-sm">Your messages will appear here.</p>
+            <p className="text-sm sm:text-base opacity-90">
+              Your conversations will appear here.
+            </p>
           </div>
         )}
       </main>

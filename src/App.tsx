@@ -22,12 +22,7 @@ import Header from "./components/Header";
 import { MusicianProfile, JobPosting } from "./types";
 import NotFound from "./Pages/NotFoundPage";
 
-// ❌ Remove this extra default export
-// export default function NotFoundPage() {
-//   return <NotFound />;
-// }
 
-// ✅ Instead, define NotFoundPage as a normal component
 function NotFoundPage() {
   return <NotFound />;
 }

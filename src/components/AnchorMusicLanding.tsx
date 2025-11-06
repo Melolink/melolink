@@ -17,7 +17,7 @@ import {
   Award,
   Sparkles,
 } from "lucide-react";
-import Logo from "C:\Users\.habakkuk\Desktop\ancho\anchormusic\Public\Images\Anchor.png";
+import Logo from "C:Users.habakkukDesktopanchoanchormusicPublicImagesAnchor.png";
 
 type AnchorMusicLandingProps = {
   onAuthSuccess?: () => void;
@@ -228,14 +228,10 @@ export default function AnchorMusicLanding({
           <div className="flex items-center gap-2 sm:gap-3 transform hover:scale-105 transition-transform duration-300 cursor-pointer">
             <div className="flex items-center gap-2 sm:gap-3 transform hover:scale-105 transition-transform duration-300 cursor-pointer">
               <img
-  src="/images/molo.png"
-  alt="Anchor Logo"
-  className="w-40 h-6 object-contain"
-/>
-
-                  
-
-
+                src="/images/molo.png"
+                alt="Anchor Logo"
+                className="w-40 h-6 object-contain"
+              />
             </div>
           </div>
 
@@ -409,14 +405,13 @@ export default function AnchorMusicLanding({
             <div className="order-1 lg:order-2 h-48 sm:h-64 lg:h-80 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-2xl flex items-center justify-center backdrop-blur-sm border border-white/10 hover:border-white/20 transition-all duration-500 transform hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/30">
               <div className="text-center space-y-4 p-6">
                 <div className="w-12 h-12 sm:w-16 sm:h-16 text-purple-400 mx-auto animate-bounce" />
-                <img src="Images/Achor.png" alt="Log"  />
-                </div>
-                <span className="text-sm sm:text-base text-gray-300">
-                  Premium Experience Awaits
-                </span>
+                <img src="Images/Achor.png" alt="Log" />
               </div>
+              <span className="text-sm sm:text-base text-gray-300">
+                Premium Experience Awaits
+              </span>
             </div>
-       
+          </div>
         </section>
 
         {/* Features Section with animated cards */}

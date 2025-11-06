@@ -9,13 +9,12 @@ export default function PaymentUI() {
   const [name, setName] = useState("");
   const [method, setMethod] = useState("card");
 
-  
   const publicKey = "pk_test_a5100dde6eef6aa83b3581984fa690b3e6cab21c";
 
   const config = {
     reference: new Date().getTime().toString(),
     email,
-    amount: Number(amount) * 100, 
+    amount: Number(amount) * 100,
     publicKey,
     metadata: { name },
   };
@@ -28,43 +27,39 @@ export default function PaymentUI() {
       return;
     }
 
-    // ✅ Trigger Paystack popup
     initializePayment(
-      (response) => {
-        alert("Payment Successful 🎉 Reference: " + response.reference);
-      },
-      () => {
-        alert("Payment cancelled ❌");
-      }
+      (response) => alert("Payment Successful 🎉 Reference: " + response.reference),
+      () => alert("Payment cancelled ❌")
     );
   };
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50">
       {/* Sidebar / Payment Summary */}
-      <aside className="w-full lg:w-1/3 bg-green-600 text-white p-6 flex flex-col justify-between">
+      <aside className="w-full lg:w-1/3 bg-gradient-to-r from-[#7B2FFC] via-[#C55FFC] to-[#FFB347] text-white p-6 flex flex-col justify-between shadow-md">
         <div>
           <div className="flex items-center gap-2 mb-6">
             <ArrowLeft className="w-5 h-5" />
             <h2 className="text-xl font-semibold">Back to Dashboard</h2>
           </div>
           <h1 className="text-3xl font-bold mb-2">Pay with Paystack</h1>
-          <p className="text-green-100 mb-6">
-            Secure payment powered by Paystack 
+          <p className="text-white/80 mb-6">
+            Secure payment powered by Paystack
           </p>
+
           <div className="space-y-4">
-            <div className="bg-green-500/40 p-4 rounded-lg">
-              <h3 className="text-sm text-green-100">Wallet Balance</h3>
+            <div className="bg-white/10 p-4 rounded-lg backdrop-blur-sm">
+              <h3 className="text-sm text-white/80">Wallet Balance</h3>
               <p className="text-3xl font-bold">₦15,000</p>
             </div>
-            <div className="bg-green-500/40 p-4 rounded-lg">
-              <h3 className="text-sm text-green-100">Recent Transaction</h3>
+            <div className="bg-white/10 p-4 rounded-lg backdrop-blur-sm">
+              <h3 className="text-sm text-white/80">Recent Transaction</h3>
               <p className="text-lg font-medium">₦5,000 — Gift Card Redeem</p>
             </div>
           </div>
         </div>
 
-        <div className="mt-10 text-sm text-center text-green-100">
+        <div className="mt-10 text-sm text-center text-white/70">
           Secure & encrypted payment
         </div>
       </aside>
@@ -89,7 +84,7 @@ export default function PaymentUI() {
                 placeholder="John Doe"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="mt-1 w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-400 outline-none"
+                className="mt-1 w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#C55FFC] outline-none"
               />
             </div>
 
@@ -102,7 +97,7 @@ export default function PaymentUI() {
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-400 outline-none"
+                className="mt-1 w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#C55FFC] outline-none"
               />
             </div>
 
@@ -115,15 +110,15 @@ export default function PaymentUI() {
                 placeholder="5000"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="mt-1 w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-400 outline-none"
+                className="mt-1 w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#C55FFC] outline-none"
               />
             </div>
 
             <div className="flex gap-3 mt-4">
               <button
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition ${
                   method === "card"
-                    ? "bg-green-500 text-white"
+                    ? "bg-gradient-to-r from-[#7B2FFC] via-[#C55FFC] to-[#FFB347] text-white shadow-md"
                     : "border-gray-300"
                 }`}
                 onClick={() => setMethod("card")}
@@ -132,9 +127,9 @@ export default function PaymentUI() {
               </button>
 
               <button
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition ${
                   method === "wallet"
-                    ? "bg-green-500 text-white"
+                    ? "bg-gradient-to-r from-[#7B2FFC] via-[#C55FFC] to-[#FFB347] text-white shadow-md"
                     : "border-gray-300"
                 }`}
                 onClick={() => setMethod("wallet")}
@@ -146,7 +141,7 @@ export default function PaymentUI() {
 
           <button
             onClick={handlePay}
-            className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg flex items-center justify-center gap-2 transition"
+            className="w-full bg-gradient-to-r from-[#7B2FFC] via-[#C55FFC] to-[#FFB347] hover:opacity-90 text-white py-3 rounded-lg flex items-center justify-center gap-2 transition shadow-md"
           >
             <Send className="w-4 h-4" /> Proceed to Pay
           </button>

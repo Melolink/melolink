@@ -26,7 +26,7 @@ const Dashboard: React.FC<DashboardProps> = ({ userType }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const StatCard = ({ title, value, change, icon: Icon, color }: any) => (
-    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition">
+    <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-gray-500 text-sm mb-1">{title}</p>
@@ -96,33 +96,33 @@ const Dashboard: React.FC<DashboardProps> = ({ userType }) => {
                 value="47"
                 change={12}
                 icon={Calendar}
-                color="bg-purple-100 text-purple-600"
+                color="bg-blue-100 text-blue-600"
               />
               <StatCard
                 title="Total Earnings"
                 value="₦345,000"
                 change={8}
                 icon={DollarSign}
-                color="bg-[#C55FFC]/20 text-[#C55FFC]"
+                color="bg-green-100 text-green-600"
               />
               <StatCard
                 title="Rating"
                 value="4.8"
                 change={3}
                 icon={Star}
-                color="bg-[#FFB347]/20 text-[#FFB347]"
+                color="bg-yellow-100 text-yellow-600"
               />
               <StatCard
                 title="Profile Views"
                 value="1,234"
                 change={-2}
                 icon={Users}
-                color="bg-[#7B2FFC]/20 text-[#7B2FFC]"
+                color="bg-purple-100 text-purple-600"
               />
             </div>
-            <div className="bg-white border border-gray-100 rounded-xl shadow-sm p-6">
+            <div className="bg-white rounded-xl shadow p-6">
               <h2 className="font-semibold text-lg mb-3">Overview Chart</h2>
-              <div className="h-64 bg-gray-100 flex items-center justify-center rounded-lg text-gray-500">
+              <div className="h-64 bg-gray-100 flex items-center justify-center rounded-lg">
                 Chart visualization
               </div>
             </div>
@@ -130,7 +130,7 @@ const Dashboard: React.FC<DashboardProps> = ({ userType }) => {
         );
       default:
         return (
-          <div className="bg-white border border-gray-100 rounded-xl shadow-md p-8 text-center">
+          <div className="bg-white rounded-xl shadow-lg p-8 text-center">
             <h2 className="text-xl font-semibold text-gray-900 mb-2 capitalize">
               {activeSection}
             </h2>
@@ -143,15 +143,15 @@ const Dashboard: React.FC<DashboardProps> = ({ userType }) => {
   };
 
   return (
-    <div className="h-screen flex bg-white overflow-hidden relative">
+    <div className="h-screen flex bg-gray-50 overflow-hidden relative">
       {/* Sidebar */}
       <aside
-        className={`fixed z-40 h-full w-64 bg-white border-r border-gray-200 text-gray-800 transform transition-transform duration-300 ease-in-out
+        className={`fixed z-40 h-full w-64 bg-white shadow-xl transform transition-transform duration-300 ease-in-out
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} 
         lg:static lg:translate-x-0`}
       >
-        <div className="flex items-center justify-between p-5 border-b border-gray-200">
-          <h1 className="font-bold text-lg text-[#7B2FFC] capitalize">
+        <div className="flex items-center justify-between p-5 border-b">
+          <h1 className="font-bold text-lg text-gray-800 capitalize">
             {userType} Dashboard
           </h1>
         </div>
@@ -166,8 +166,8 @@ const Dashboard: React.FC<DashboardProps> = ({ userType }) => {
               }}
               className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-all ${
                 activeSection === key
-                  ? "bg-[#7B2FFC]/10 text-[#7B2FFC] font-medium shadow-sm"
-                  : "text-gray-700 hover:bg-gray-100"
+                  ? "bg-green-50 text-green-600 font-medium"
+                  : "text-gray-600 hover:bg-gray-100"
               }`}
             >
               <Icon className="w-5 h-5" />
@@ -180,7 +180,7 @@ const Dashboard: React.FC<DashboardProps> = ({ userType }) => {
       {/* Sidebar Toggle Handle ( > ) */}
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-gradient-to-r from-[#7B2FFC] via-[#C55FFC] to-[#FFB347] text-white p-2 rounded-r-xl shadow-lg lg:hidden"
+        className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-green-600 text-white p-2 rounded-r-xl shadow-lg lg:hidden"
       >
         <ChevronRight
           className={`w-5 h-5 transition-transform duration-300 ${

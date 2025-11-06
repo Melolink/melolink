@@ -1,344 +1,295 @@
-import React, { useState, useEffect } from 'react';
-import { Search, Filter, MapPin, Calendar, Star, Play, Users, Music, ChevronLeft, ChevronRight } from 'lucide-react';
-import { MusicianProfile } from '../types';
-import { mockMusicians } from '../data/mockData';
+'use client';
+import React, { useState, useRef } from "react";
+import {
+  CheckCircle,
+  Heart,
+  MessageCircle,
+  Share2,
+  UserPlus,
+  Video,
+  Filter,
+  Search,
+  X,
+} from "lucide-react";
 
-interface SearchPageProps {
-  onProfileSelect: (profile: MusicianProfile) => void;
+// Type for video post
+interface VideoPost {
+  id: string;
+  videoUrl: string;
+  caption: string;
+  user: {
+    name: string;
+    username: string;
+    verified: boolean;
+    profileImage: string;
+    followers: number;
+  };
+  likes: number;
+  comments: number;
+  shares: number;
 }
 
-const SearchPage: React.FC<SearchPageProps> = ({ onProfileSelect }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [showFilters, setShowFilters] = useState(false);
-  const [filteredMusicians, setFilteredMusicians] = useState<MusicianProfile[]>(mockMusicians);
-  const [filters, setFilters] = useState({
-    location: '',
-    instruments: [] as string[],
-    skillLevel: '',
-    type: '',
-    availability: ''
-  });
+// Sample data
+const mockVideos: VideoPost[] = [
+  {
+    id: "1",
+    videoUrl: "/videos/performance1.mp4",
+    caption: "🔥 Live Afrobeat Jam — Lagos City Festival!",
+    user: {
+      name: "DJ Tempo",
+      username: "tempoofficial",
+      verified: true,
+      profileImage: "/images/dj.jpg",
+      followers: 4200,
+    },
+    likes: 340,
+    comments: 58,
+    shares: 23,
+  },
+  {
+    id: "2",
+    videoUrl: "/videos/live_sax.mp4",
+    caption: "Saxophone Solo vibes 🎷 — sweet melody from Grace",
+    user: {
+      name: "Grace Melody",
+      username: "gracemelody",
+      verified: false,
+      profileImage: "/images/grace.jpg",
+      followers: 950,
+    },
+    likes: 210,
+    comments: 32,
+    shares: 14,
+  },
+  {
+    id: "3",
+    videoUrl: "/videos/live_band.mp4",
+    caption: "Owambe groove by The BandMasters 💃🏽🥁",
+    user: {
+      name: "The BandMasters",
+      username: "bandmasters",
+      verified: true,
+      profileImage: "/images/band.jpg",
+      followers: 6200,
+    },
+    likes: 520,
+    comments: 77,
+    shares: 35,
+  },
+];
 
-  // Featured categories
-  const categories = [
-    { name: 'Piano', count: 45, icon: '🎹' },
-    { name: 'Guitar', count: 78, icon: '🎸' },
-    { name: 'Drums', count: 32, icon: '🥁' },
-    { name: 'Violin', count: 28, icon: '🎻' },
-    { name: 'Saxophone', count: 19, icon: '🎷' },
-    { name: 'Vocals', count: 65, icon: '🎤' }
-  ];
+const SearchPage = () => {
+  const [videos, setVideos] = useState<VideoPost[]>(mockVideos);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [newPost, setNewPost] = useState({ caption: "", videoUrl: "" });
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const instrumentOptions = ['Piano', 'Guitar', 'Drums', 'Violin', 'Saxophone', 'Vocals', 'Bass', 'Trumpet', 'Flute', 'Cello'];
-  const skillLevels = ['Beginner', 'Intermediate', 'Advanced', 'Professional'];
-
-  useEffect(() => {
-    let filtered = mockMusicians;
-
-    if (searchQuery) {
-      filtered = filtered.filter(musician =>
-        musician.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        musician.instruments.some(inst => inst.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        musician.bio.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+  // Handle video upload
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const videoPreview = URL.createObjectURL(file);
+      setNewPost((prev) => ({ ...prev, videoUrl: videoPreview }));
     }
-
-    if (filters.location) {
-      filtered = filtered.filter(musician =>
-        musician.location.toLowerCase().includes(filters.location.toLowerCase())
-      );
-    }
-
-    if (filters.instruments.length > 0) {
-      filtered = filtered.filter(musician =>
-        musician.instruments.some(inst => filters.instruments.includes(inst))
-      );
-    }
-
-    if (filters.skillLevel) {
-      filtered = filtered.filter(musician =>
-        musician.skillLevel === filters.skillLevel
-      );
-    }
-
-    if (filters.type) {
-      filtered = filtered.filter(musician =>
-        musician.type === filters.type
-      );
-    }
-
-    setFilteredMusicians(filtered);
-  }, [searchQuery, filters]);
-
-  const toggleInstrument = (instrument: string) => {
-    setFilters(prev => ({
-      ...prev,
-      instruments: prev.instruments.includes(instrument)
-        ? prev.instruments.filter(i => i !== instrument)
-        : [...prev.instruments, instrument]
-    }));
   };
 
-  const MusicianCard = ({ musician }: { musician: MusicianProfile }) => (
-    <div
-      onClick={() => onProfileSelect(musician)}
-      className="flex-shrink-0 w-64 bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer group overflow-hidden"
-    >
-      <div className="relative">
-        <img
-          src={musician.profileImage}
-          alt={musician.name}
-          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-        />
-        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-          <div className="w-12 h-12 bg-white/90 rounded-full flex items-center justify-center">
-            <Play className="w-6 h-6 text-gray-800 ml-1" />
-          </div>
-        </div>
-        <div className="absolute top-3 left-3">
-          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-            musician.type === 'individual' 
-              ? 'bg-blue-100 text-blue-800' 
-              : 'bg-purple-100 text-purple-800'
-          }`}>
-            {musician.type === 'individual' ? 'Individual' : 'Team/Band'}
-          </span>
-        </div>
-        <div className="absolute top-3 right-3 flex items-center space-x-1 bg-black/50 rounded-full px-2 py-1">
-          <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
-          <span className="text-white text-xs font-medium">{musician.rating}</span>
-        </div>
-      </div>
-      
-      <div className="p-4">
-        <h3 className="font-semibold text-gray-900 text-lg mb-1">{musician.name}</h3>
-        <div className="flex items-center text-gray-500 text-sm mb-2">
-          <MapPin className="w-4 h-4 mr-1" />
-          {musician.location}
-        </div>
-        <p className="text-gray-600 text-sm mb-3 line-clamp-2">{musician.bio}</p>
-        <div className="flex flex-wrap gap-1 mb-3">
-          {musician.instruments.slice(0, 3).map((instrument) => (
-            <span
-              key={instrument}
-              className="px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs"
-            >
-              {instrument}
-            </span>
-          ))}
-          {musician.instruments.length > 3 && (
-            <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs">
-              +{musician.instruments.length - 3} more
-            </span>
-          )}
-        </div>
-        <div className="flex items-center justify-between">
-          <span className="text-blue-600 font-semibold">₦{musician.hourlyRate}/hr</span>
-          <span className="text-gray-500 text-sm">{musician.completedGigs} gigs</span>
-        </div>
-      </div>
-    </div>
-  );
+  // Add a new post
+  const handleCreatePost = () => {
+    if (!newPost.caption || !newPost.videoUrl) {
+      alert("Please add a caption and upload a video");
+      return;
+    }
 
-  const CategorySection = ({ title, musicians }: { title: string; musicians: MusicianProfile[] }) => (
-    <div className="mb-12">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
-        <button className="text-blue-600 hover:text-blue-700 text-sm font-medium">
-          View All
-        </button>
-      </div>
-      <div className="flex overflow-x-auto space-x-4 pb-4 scrollbar-hide">
-        {musicians.map((musician) => (
-          <MusicianCard key={musician.id} musician={musician} />
-        ))}
-      </div>
-    </div>
+    const newVideo: VideoPost = {
+      id: (videos.length + 1).toString(),
+      videoUrl: newPost.videoUrl,
+      caption: newPost.caption,
+      user: {
+        name: "HabDev",
+        username: "habdev",
+        verified: true,
+        profileImage: "/images/profile.jpg",
+        followers: 1200,
+      },
+      likes: 0,
+      comments: 0,
+      shares: 0,
+    };
+
+    setVideos([newVideo, ...videos]);
+    setNewPost({ caption: "", videoUrl: "" });
+    setShowModal(false);
+  };
+
+  // Filter search
+  const filteredVideos = videos.filter(
+    (v) =>
+      v.caption.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      v.user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      v.user.username.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Hero Section */}
-      <div className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-          Find Your Perfect
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Header */}
+      <div className="text-center mb-10">
+        <h1 className="text-4xl font-bold text-gray-900">
+          Discover{" "}
           <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            {' '}Musical Match
+            Stage Performances
           </span>
         </h1>
-        <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-          Connect with talented musicians and bands for your events, lessons, and special occasions
+        <p className="text-gray-600 mt-2">
+          Watch, follow, and enjoy live performances from top musicians 🎶
         </p>
       </div>
 
-      {/* Search and Filters */}
-      <div className="bg-white rounded-2xl shadow-lg p-6 mb-12">
-        <div className="flex flex-col lg:flex-row gap-4">
-          <div className="flex-1 relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <input
-              type="text"
-              placeholder="Search for musicians, bands, or instruments..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
-            />
-          </div>
-          
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center space-x-2 px-6 py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium"
-          >
-            <Filter className="w-5 h-5" />
-            <span>Filters</span>
-          </button>
-        </div>
+      {/* Search Bar */}
+      <div className="bg-white rounded-2xl shadow p-4 flex items-center mb-4">
+        <Search className="w-5 h-5 text-gray-400 ml-2" />
+        <input
+          type="text"
+          placeholder="Search performances or musicians..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="flex-1 pl-3 border-none outline-none text-gray-700 bg-transparent"
+        />
+        <Filter className="w-5 h-5 text-gray-500" />
+      </div>
 
-        {showFilters && (
-          <div className="mt-6 pt-6 border-t border-gray-200">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-              {/* Location */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
-                <input
-                  type="text"
-                  placeholder="Enter city..."
-                  value={filters.location}
-                  onChange={(e) => setFilters(prev => ({ ...prev, location: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+      {/* Create Post Button (Moved under Search) */}
+      <div className="flex justify-center mb-8">
+        <button
+          onClick={() => setShowModal(true)}
+          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl transition font-medium shadow"
+        >
+          <Video className="w-5 h-5" /> Create Post
+        </button>
+      </div>
 
-              {/* Instruments */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Instruments</label>
-                <div className="relative">
-                  <select
-                    onChange={(e) => toggleInstrument(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="">Select instruments...</option>
-                    {instrumentOptions.map(instrument => (
-                      <option key={instrument} value={instrument}>{instrument}</option>
-                    ))}
-                  </select>
-                </div>
-                {filters.instruments.length > 0 && (
-                  <div className="mt-2 flex flex-wrap gap-1">
-                    {filters.instruments.map(instrument => (
-                      <span
-                        key={instrument}
-                        onClick={() => toggleInstrument(instrument)}
-                        className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs cursor-pointer"
-                      >
-                        {instrument} ×
-                      </span>
-                    ))}
+      {/* Video Feed */}
+      <div className="space-y-8">
+        {filteredVideos.length > 0 ? (
+          filteredVideos.map((video) => (
+            <div
+              key={video.id}
+              className="bg-white rounded-2xl shadow-md hover:shadow-lg transition overflow-hidden"
+            >
+              <video
+                src={video.videoUrl}
+                controls
+                className="w-full h-72 object-cover bg-black"
+              />
+              <div className="p-5">
+                {/* User Info */}
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={video.user.profileImage}
+                      alt={video.user.name}
+                      className="w-12 h-12 rounded-full border object-cover"
+                    />
+                    <div>
+                      <div className="flex items-center gap-1">
+                        <h2 className="font-semibold text-gray-900">
+                          {video.user.name}
+                        </h2>
+                        {video.user.verified && (
+                          <CheckCircle className="text-blue-500 w-4 h-4" />
+                        )}
+                      </div>
+                      <p className="text-sm text-gray-500">
+                        @{video.user.username}
+                      </p>
+                    </div>
                   </div>
-                )}
-              </div>
+                  <button className="flex items-center gap-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-full text-sm transition">
+                    <UserPlus className="w-4 h-4" /> Follow
+                  </button>
+                </div>
 
-              {/* Skill Level */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Skill Level</label>
-                <select
-                  value={filters.skillLevel}
-                  onChange={(e) => setFilters(prev => ({ ...prev, skillLevel: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">All levels</option>
-                  {skillLevels.map(level => (
-                    <option key={level} value={level}>{level}</option>
-                  ))}
-                </select>
-              </div>
+                {/* Caption */}
+                <p className="text-gray-800 mb-3">{video.caption}</p>
 
-              {/* Type */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
-                <select
-                  value={filters.type}
-                  onChange={(e) => setFilters(prev => ({ ...prev, type: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Both</option>
-                  <option value="individual">Individual</option>
-                  <option value="band">Team/Band</option>
-                </select>
-              </div>
-
-              {/* Availability */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Availability</label>
-                <input
-                  type="date"
-                  value={filters.availability}
-                  onChange={(e) => setFilters(prev => ({ ...prev, availability: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+                {/* Reactions */}
+                <div className="flex justify-between text-sm text-gray-600 border-t pt-3">
+                  <div className="flex items-center gap-2 cursor-pointer hover:text-red-500 transition">
+                    <Heart className="w-4 h-4" /> {video.likes}
+                  </div>
+                  <div className="flex items-center gap-2 cursor-pointer hover:text-blue-500 transition">
+                    <MessageCircle className="w-4 h-4" /> {video.comments}
+                  </div>
+                  <div className="flex items-center gap-2 cursor-pointer hover:text-green-600 transition">
+                    <Share2 className="w-4 h-4" /> {video.shares}
+                  </div>
+                </div>
               </div>
             </div>
-
-            <div className="flex justify-between mt-4">
-              <button
-                onClick={() => setFilters({
-                  location: '',
-                  instruments: [],
-                  skillLevel: '',
-                  type: '',
-                  availability: ''
-                })}
-                className="text-gray-600 hover:text-gray-800 text-sm"
-              >
-                Clear all filters
-              </button>
-              <span className="text-sm text-gray-500">
-                {filteredMusicians.length} musicians found
-              </span>
-            </div>
-          </div>
+          ))
+        ) : (
+          <p className="text-gray-600 text-center">No results found.</p>
         )}
       </div>
 
-      {/* Categories */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-12">
-        {categories.map((category) => (
-          <div
-            key={category.name}
-            className="bg-white rounded-xl p-6 text-center hover:shadow-md transition-shadow cursor-pointer group"
-          >
-            <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">
-              {category.icon}
+      {/* Create Post Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-lg shadow-lg relative">
+            <button
+              onClick={() => setShowModal(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+              Create New Post
+            </h2>
+
+            <textarea
+              placeholder="Write a caption..."
+              value={newPost.caption}
+              onChange={(e) =>
+                setNewPost((prev) => ({ ...prev, caption: e.target.value }))
+              }
+              className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none mb-4 resize-none"
+              rows={3}
+            />
+
+            <div
+              onClick={() => fileInputRef.current?.click()}
+              className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:bg-gray-50"
+            >
+              {newPost.videoUrl ? (
+                <video
+                  src={newPost.videoUrl}
+                  controls
+                  className="w-full h-56 object-cover rounded-lg"
+                />
+              ) : (
+                <p className="text-gray-500">
+                  Click to upload a performance video 🎥
+                </p>
+              )}
+              <input
+                type="file"
+                accept="video/*"
+                ref={fileInputRef}
+                className="hidden"
+                onChange={handleFileChange}
+              />
             </div>
-            <h3 className="font-semibold text-gray-900 mb-1">{category.name}</h3>
-            <p className="text-gray-500 text-sm">{category.count} musicians</p>
+
+            <button
+              onClick={handleCreatePost}
+              className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg transition"
+            >
+              Post Video
+            </button>
           </div>
-        ))}
-      </div>
-
-      {/* Featured Musicians */}
-      <CategorySection 
-        title="Featured Musicians" 
-        musicians={filteredMusicians.filter(m => m.featured).slice(0, 6)} 
-      />
-
-      {/* Top Rated */}
-      <CategorySection 
-        title="Top Rated" 
-        musicians={filteredMusicians.sort((a, b) => b.rating - a.rating).slice(0, 6)} 
-      />
-
-      {/* New Members */}
-      <CategorySection 
-        title="New Members" 
-        musicians={filteredMusicians.filter(m => m.isNew).slice(0, 6)} 
-      />
-
-      {/* Near You */}
-      <CategorySection 
-        title="Near You" 
-        musicians={filteredMusicians.slice(0, 6)} 
-      />
+        </div>
+      )}
     </div>
   );
 };
