@@ -14,6 +14,7 @@ import {
 import ChatSection from "./chat";
 import PaymentUI from "./PaymentUI";
 import ProfilePage from "./ProfilePage";
+import Bookings from "./Bookings";
 
 interface DashboardProps {
   userType: "client" | "musician" | "admin";
@@ -87,6 +88,10 @@ const Dashboard: React.FC<DashboardProps> = ({ userType }) => {
         return <ChatSection />;
       case "earnings":
         return <PaymentUI />;
+
+        case "bookings":
+        return <Bookings/>
+       
       case "overview":
         return (
           <div className="text-gray-700">

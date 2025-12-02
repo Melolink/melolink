@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Send, Smile, Search, ArrowLeft } from 'lucide-react';
 
 export default function ChatDashboard() {
@@ -11,17 +11,17 @@ export default function ChatDashboard() {
   const emojis = ['😀', '😂', '🥰', '😎', '🔥', '👍', '❤️', '🤔', '🎉', '🙌'];
 
   const users = [
-    { id: '1', name: 'David Habakkuk', avatar: '/images/Melo.png' },
-    { id: '2', name: 'Gbemisola', avatar: '/user2.jpg' },
-    { id: '3', name: 'Sophie', avatar: '/user3.jpg' },
+    { id: '1', name: 'David Habakkuk', avatar: '/images/ty.jpg' },
+    { id: '2', name: 'Gbemisola', avatar: '/images/yyyyyyy.jpg' },
+    { id: '3', name: 'Sophie', avatar: '/images/tayo.jpg' },
   ];
 
   const [chats, setChats] = useState<{
     [key: string]: { id: number; text: string; sender: 'user' | 'bot' }[];
   }>({
     '1': [{ id: 1, text: 'Hey, I am David 👋 and you?', sender: 'bot' }],
-    '2': [{ id: 1, text: 'Hi Gbemisola 😄', sender: 'bot' }],
-    '3': [{ id: 1, text: 'Hey Sophie!', sender: 'bot' }],
+    '2': [{ id: 1, text: 'Hi Hbakkuk 😄', sender: 'bot' }],
+    '3': [{ id: 1, text: 'Hey habak, is Sohie', sender: 'bot' }],
   });
 
   const handleSend = () => {
@@ -98,7 +98,7 @@ export default function ChatDashboard() {
                 </h3>
                 <p className="text-sm text-gray-500 truncate">
                   {chats[user.id]?.at(-1)?.text || 'No messages yet'}
-                </p>
+                </p>  
               </div>
             </div>
           ))}

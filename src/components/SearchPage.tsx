@@ -12,7 +12,15 @@ import {
   X,
 } from "lucide-react";
 
-// Type for video post
+// ---------------------------
+// TYPES
+// ---------------------------
+interface Comment {
+  id: string;
+  user: string;
+  text: string;
+}
+
 interface VideoPost {
   id: string;
   videoUrl: string;
@@ -25,11 +33,15 @@ interface VideoPost {
     followers: number;
   };
   likes: number;
-  comments: number;
+  comments: Comment[];
   shares: number;
+  isLiked?: boolean;
+  isFollowing?: boolean;
 }
 
-// Sample data
+// ---------------------------
+// SAMPLE DATA
+// ---------------------------
 const mockVideos: VideoPost[] = [
   {
     id: "1",
@@ -43,8 +55,10 @@ const mockVideos: VideoPost[] = [
       followers: 4200,
     },
     likes: 340,
-    comments: 58,
+    comments: [],
     shares: 23,
+    isLiked: false,
+    isFollowing: false,
   },
   {
     id: "2",
@@ -58,8 +72,10 @@ const mockVideos: VideoPost[] = [
       followers: 950,
     },
     likes: 210,
-    comments: 32,
+    comments: [],
     shares: 14,
+    isLiked: false,
+    isFollowing: false,
   },
   {
     id: "3",
@@ -73,56 +89,96 @@ const mockVideos: VideoPost[] = [
       followers: 6200,
     },
     likes: 520,
-    comments: 77,
+    comments: [],
     shares: 35,
+    isLiked: false,
+    isFollowing: false,
   },
 ];
 
+// ---------------------------
+// MAIN COMPONENT
+// ---------------------------
 const SearchPage = () => {
   const [videos, setVideos] = useState<VideoPost[]>(mockVideos);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showModal, setShowModal] = useState(false);
-  const [newPost, setNewPost] = useState({ caption: "", videoUrl: "" });
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [showCommentModal, setShowCommentModal] = useState(false);
+  const [activePost, setActivePost] = useState<VideoPost | null>(null);
+  const [newComment, setNewComment] = useState("");
 
-  // Handle video upload
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const videoPreview = URL.createObjectURL(file);
-      setNewPost((prev) => ({ ...prev, videoUrl: videoPreview }));
-    }
+  // ---------------------------
+  // LIKE TOGGLE
+  // ---------------------------
+  const toggleLike = (id: string) => {
+    setVideos((prev) =>
+      prev.map((post) =>
+        post.id === id
+          ? {
+              ...post,
+              isLiked: !post.isLiked,
+              likes: post.isLiked ? post.likes - 1 : post.likes + 1,
+            }
+          : post
+      )
+    );
   };
 
-  // Add a new post
-  const handleCreatePost = () => {
-    if (!newPost.caption || !newPost.videoUrl) {
-      alert("Please add a caption and upload a video");
-      return;
-    }
+  // ---------------------------
+  // FOLLOW TOGGLE
+  // ---------------------------
+  const toggleFollow = (id: string) => {
+    setVideos((prev) =>
+      prev.map((post) =>
+        post.id === id
+          ? { ...post, isFollowing: !post.isFollowing }
+          : post
+      )
+    );
+  };
 
-    const newVideo: VideoPost = {
-      id: (videos.length + 1).toString(),
-      videoUrl: newPost.videoUrl,
-      caption: newPost.caption,
-      user: {
-        name: "HabDev",
-        username: "habdev",
-        verified: true,
-        profileImage: "/images/profile.jpg",
-        followers: 1200,
-      },
-      likes: 0,
-      comments: 0,
-      shares: 0,
+  // ---------------------------
+  // SHARE COUNT (Simple Increment)
+  // ---------------------------
+  const incrementShare = (id: string) => {
+    setVideos((prev) =>
+      prev.map((post) =>
+        post.id === id ? { ...post, shares: post.shares + 1 } : post
+      )
+    );
+  };
+
+  const openComments = (post: VideoPost) => {
+    setActivePost(post);
+    setShowCommentModal(true);
+  };
+
+  const addComment = () => {
+    if (!newComment.trim()) return;
+
+    const comment: Comment = {
+      id: Date.now().toString(),
+      user: "You",
+      text: newComment,
     };
 
-    setVideos([newVideo, ...videos]);
-    setNewPost({ caption: "", videoUrl: "" });
-    setShowModal(false);
+    setVideos((prev) =>
+      prev.map((post) =>
+        post.id === activePost?.id
+          ? { ...post, comments: [...post.comments, comment] }
+          : post
+      )
+    );
+
+    setActivePost((prev) =>
+      prev
+        ? { ...prev, comments: [...prev.comments, comment] }
+        : prev
+    );
+
+    setNewComment("");
   };
 
-  // Filter search
+  // FILTER
   const filteredVideos = videos.filter(
     (v) =>
       v.caption.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -131,161 +187,155 @@ const SearchPage = () => {
   );
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Header */}
-      <div className="text-center mb-10">
-        <h1 className="text-4xl font-bold text-gray-900">
-          Discover{" "}
-          <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            Stage Performances
-          </span>
-        </h1>
-        <p className="text-gray-600 mt-2">
-          Watch, follow, and enjoy live performances from top musicians 🎶
-        </p>
-      </div>
+    <div className="max-w-4xl mx-auto px-4 py-8">
 
-      {/* Search Bar */}
-      <div className="bg-white rounded-2xl shadow p-4 flex items-center mb-4">
+      {/* SEARCH BAR */}
+      <div className="bg-white rounded-2xl shadow p-4 flex items-center mb-6">
         <Search className="w-5 h-5 text-gray-400 ml-2" />
         <input
           type="text"
           placeholder="Search performances or musicians..."
-          value={searchQuery}
+          className="flex-1 pl-3 border-none outline-none text-gray-700"
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="flex-1 pl-3 border-none outline-none text-gray-700 bg-transparent"
         />
         <Filter className="w-5 h-5 text-gray-500" />
       </div>
 
-      {/* Create Post Button (Moved under Search) */}
-      <div className="flex justify-center mb-8">
-        <button
-          onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl transition font-medium shadow"
-        >
-          <Video className="w-5 h-5" /> Create Post
-        </button>
-      </div>
-
-      {/* Video Feed */}
+      {/* POSTS */}
       <div className="space-y-8">
-        {filteredVideos.length > 0 ? (
-          filteredVideos.map((video) => (
-            <div
-              key={video.id}
-              className="bg-white rounded-2xl shadow-md hover:shadow-lg transition overflow-hidden"
-            >
-              <video
-                src={video.videoUrl}
-                controls
-                className="w-full h-72 object-cover bg-black"
-              />
-              <div className="p-5">
-                {/* User Info */}
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={video.user.profileImage}
-                      alt={video.user.name}
-                      className="w-12 h-12 rounded-full border object-cover"
-                    />
-                    <div>
-                      <div className="flex items-center gap-1">
-                        <h2 className="font-semibold text-gray-900">
-                          {video.user.name}
-                        </h2>
-                        {video.user.verified && (
-                          <CheckCircle className="text-blue-500 w-4 h-4" />
-                        )}
-                      </div>
-                      <p className="text-sm text-gray-500">
-                        @{video.user.username}
-                      </p>
+        {filteredVideos.map((video) => (
+          <div
+            key={video.id}
+            className="bg-white rounded-2xl shadow-md hover:shadow-xl transition p-0 overflow-hidden"
+          >
+            {/* VIDEO */}
+            <video
+              src={video.videoUrl}
+              controls
+              className="w-full aspect-video bg-black object-cover"
+            />
+
+            {/* CONTENT */}
+            <div className="p-5">
+
+              {/* USER */}
+              <div className="flex justify-between items-center mb-4">
+                <div className="flex items-center gap-3">
+                  <img
+                    src={video.user.profileImage}
+                    className="w-14 h-14 rounded-full object-cover"
+                  />
+
+                  <div>
+                    <div className="flex items-center gap-1">
+                      <p className="font-semibold">{video.user.name}</p>
+                      {video.user.verified && (
+                        <CheckCircle className="text-blue-500 w-4 h-4" />
+                      )}
                     </div>
+                    <p className="text-sm text-gray-500">@{video.user.username}</p>
                   </div>
-                  <button className="flex items-center gap-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-full text-sm transition">
-                    <UserPlus className="w-4 h-4" /> Follow
-                  </button>
                 </div>
 
-                {/* Caption */}
-                <p className="text-gray-800 mb-3">{video.caption}</p>
+                {/* FOLLOW BUTTON */}
+                <button
+                  onClick={() => toggleFollow(video.id)}
+                  className={`px-4 py-2 rounded-full text-sm transition ${
+                    video.isFollowing
+                      ? "bg-gray-200 text-gray-700"
+                      : "bg-blue-600 text-white"
+                  }`}
+                >
+                  {video.isFollowing ? "Following" : "Follow"}
+                </button>
+              </div>
 
-                {/* Reactions */}
-                <div className="flex justify-between text-sm text-gray-600 border-t pt-3">
-                  <div className="flex items-center gap-2 cursor-pointer hover:text-red-500 transition">
-                    <Heart className="w-4 h-4" /> {video.likes}
-                  </div>
-                  <div className="flex items-center gap-2 cursor-pointer hover:text-blue-500 transition">
-                    <MessageCircle className="w-4 h-4" /> {video.comments}
-                  </div>
-                  <div className="flex items-center gap-2 cursor-pointer hover:text-green-600 transition">
-                    <Share2 className="w-4 h-4" /> {video.shares}
-                  </div>
+              {/* CAPTION */}
+              <p className="text-gray-800 mb-4 line-clamp-2">{video.caption}</p>
+
+              {/* ACTION BUTTONS */}
+              <div className="flex justify-between border-t pt-4 text-gray-600">
+
+                {/* LIKE */}
+                <div
+                  onClick={() => toggleLike(video.id)}
+                  className="flex items-center gap-2 cursor-pointer hover:text-red-500"
+                >
+                  <Heart
+                    className={`w-5 h-2 ${
+                      video.isLiked ? "fill-red-500 text-red-500" : ""
+                    }`}
+                  />
+                  {video.likes}
+                </div>
+
+                {/* COMMENTS */}
+                <div
+                  onClick={() => openComments(video)}
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600"
+                >
+                  <MessageCircle className="w-5 h-5" />
+                  {video.comments.length}
+                </div>
+
+                {/* SHARE */}
+                <div
+                  onClick={() => incrementShare(video.id)}
+                  className="flex items-center gap-2 cursor-pointer hover:text-green-600"
+                >
+                  <Share2 className="w-5 h-5" />
+                  {video.shares}
                 </div>
               </div>
             </div>
-          ))
-        ) : (
-          <p className="text-gray-600 text-center">No results found.</p>
-        )}
+          </div>
+        ))}
       </div>
 
-      {/* Create Post Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-lg shadow-lg relative">
+      {/* -------------------------------- */}
+      {/* COMMENT MODAL */}
+      {/* -------------------------------- */}
+      {showCommentModal && activePost && (
+        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-lg relative">
+
             <button
-              onClick={() => setShowModal(false)}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+              className="absolute top-4 right-4 text-gray-600"
+              onClick={() => setShowCommentModal(false)}
             >
-              <X className="w-5 h-5" />
+              <X />
             </button>
 
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-              Create New Post
-            </h2>
+            <h2 className="text-2xl font-semibold mb-4">Comments</h2>
 
-            <textarea
-              placeholder="Write a caption..."
-              value={newPost.caption}
-              onChange={(e) =>
-                setNewPost((prev) => ({ ...prev, caption: e.target.value }))
-              }
-              className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none mb-4 resize-none"
-              rows={3}
-            />
-
-            <div
-              onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:bg-gray-50"
-            >
-              {newPost.videoUrl ? (
-                <video
-                  src={newPost.videoUrl}
-                  controls
-                  className="w-full h-56 object-cover rounded-lg"
-                />
+            {/* EXISTING COMMENTS */}
+            <div className="space-y-4 mb-4 max-h-72 overflow-auto">
+              {activePost.comments.length > 0 ? (
+                activePost.comments.map((c) => (
+                  <div key={c.id} className="p-3 bg-gray-100 rounded-lg">
+                    <p className="font-semibold text-sm">{c.user}</p>
+                    <p>{c.text}</p>
+                  </div>
+                ))
               ) : (
-                <p className="text-gray-500">
-                  Click to upload a performance video 🎥
-                </p>
+                <p className="text-gray-600">No comments yet.</p>
               )}
-              <input
-                type="file"
-                accept="video/*"
-                ref={fileInputRef}
-                className="hidden"
-                onChange={handleFileChange}
-              />
             </div>
 
+            {/* ADD COMMENT */}
+            <textarea
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              rows={3}
+              className="w-full border rounded-lg p-3 outline-none mb-3"
+              placeholder="Write a comment..."
+            />
+
             <button
-              onClick={handleCreatePost}
-              className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg transition"
+              onClick={addComment}
+              className="w-full bg-blue-600 text-white p-3 rounded-lg"
             >
-              Post Video
+              Post Comment
             </button>
           </div>
         </div>

@@ -1,5 +1,7 @@
 SKILL FOCUS-RHYME AND RHYTHM 
-The rhyming pattern is that ,in each stanza of four lines , the two first lines rhyme with each other , an the third and fourth line rhyme with each other . if we use 'a' to indicate the rhyming words for each of the first two lines , and 'b' to indicate the rhyming word for the last two lines , the RHYMING PATTERN is a-a-b-b-,or simply aabb .thus in the first stanza ,age and engage rhyme [aa] ; and raise and days rhyme [bb] .Go through the other two stanzas and observe the same pattern.
+The rhyming pattern is that ,in each stanza of four lines , the two first lines rhyme with each other , an the third and fourth line rhyme with each other . if we use 'a' to indicate the rhyming words for each of the first two lines , and 'b' to indicate the rhyming word for the last two lines , the RHYMING PATTERN is a-a-b-b-,or simply aabb .thus in the first stanza ,age and engage rhyme
+ [aa] ; and raise and days rhyme 
+ [bb] .Go through the other two stanzas and observe the same pattern.
 The RHYTHMIC pattern is that in each line there are four stressed syllable , and they alternate - which means that a stressed syllable is followed by unstressed syllable ,which is followed by a stressed syllable ,and so on .We find the pattern very clearly in line 2- the stressed syllables are shown here in block capitals ;
 Tis GOOD to FIND you NOW engage
 Not every line perfectly follow this pettern  For example ,what do you notice about line 4 and 8 

@@ -81,7 +81,7 @@ export default function PaymentUI() {
               </label>
               <input
                 type="text"
-                placeholder="John Doe"
+                placeholder="Enter userName"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="mt-1 w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#C55FFC] outline-none"
@@ -107,7 +107,7 @@ export default function PaymentUI() {
               </label>
               <input
                 type="number"
-                placeholder="5000"
+                placeholder="Enter amount"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 className="mt-1 w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#C55FFC] outline-none"

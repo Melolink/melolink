@@ -1,405 +1,212 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Play, Star, MapPin, Calendar, Clock, Users, Music, Heart, Share2, MessageCircle, Phone, Mail, ChevronLeft, ChevronRight, ShoppingCart, CreditCard } from 'lucide-react';
-import { MusicianProfile } from '../types';
+import { Mail, Phone, MapPin, Music, Award, Calendar, Heart, MessageCircle, Share2, Play, Camera, Video, Users, MoreHorizontal } from 'lucide-react';
 
-interface ProfilePageProps {
-  profile: MusicianProfile;
-  onBack: () => void;
-  userType: 'client' | 'musician' | 'admin';
-}
+export default function FacebookMusicianProfile() {
 
-const ProfilePage: React.FC<ProfilePageProps> = ({ profile, onBack, userType }) => {
-  const [activeVideoIndex, setActiveVideoIndex] = useState(0);
-  const [showBookingModal, setShowBookingModal] = useState(false);
-  const [showCourseModal, setShowCourseModal] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [profilePic, setProfilePic] = useState<string | null>(null);
 
-  const reviews = [
+const handleProfileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  if (e.target.files && e.target.files[0]) {
+    const file = e.target.files[0];
+    setProfilePic(URL.createObjectURL(file));
+  }
+};
+
+  const [posts, setPosts] = useState([
     {
       id: 1,
-      clientName: "Grace Emmanuel",
-      rating: 5,
-      comment: "Amazing performance at our wedding! Very professional and talented.",
-      date: "2024-01-15",
-      event: "Wedding Ceremony"
+      type: "video",
+      content: "Just finished recording my new single! Can't wait to share it with you all 🎵",
+      timestamp: "2 hours ago",
+      likes: 234,
+      comments: 45,
+      shares: 12,
+      liked: false,
+      thumbnail: "from-blue-500 to-cyan-500"
     },
     {
       id: 2,
-      clientName: "Victory Church",
-      rating: 5,
-      comment: "Perfect for our Sunday service. Great communication and skill.",
-      date: "2024-01-08",
-      event: "Church Service"
+      type: "music",
+      content: "Throwback to last night's jazz session at Blue Note. What an amazing crowd! 🎷✨",
+      timestamp: "1 day ago",
+      likes: 567,
+      comments: 89,
+      shares: 34,
+      liked: false,
+      songTitle: "Midnight Blues",
+      duration: "3:45",
+      thumbnail: "from-purple-500 to-pink-500"
     },
     {
       id: 3,
-      clientName: "Lagos Events Co.",
-      rating: 4,
-      comment: "Professional and punctual. Would definitely hire again!",
-      date: "2024-01-02",
-      event: "Corporate Event"
+      type: "image",
+      content: "Studio vibes today. Working on something special 🎹",
+      timestamp: "3 days ago",
+      likes: 432,
+      comments: 67,
+      shares: 23,
+      liked: false,
+      thumbnail: "from-orange-500 to-red-500"
+    },
+    {
+      id: 4,
+      type: "video",
+      content: "Behind the scenes of our latest music video shoot! 🎬🎸",
+      timestamp: "5 days ago",
+      likes: 891,
+      comments: 134,
+      shares: 56,
+      liked: false,
+      thumbnail: "from-green-500 to-emerald-500"
     }
-  ];
+  ]);
 
-  const BookingModal = () => (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl max-w-md w-full p-6">
-        <h3 className="text-xl font-bold text-gray-900 mb-4">Book {profile.name}</h3>
-        <form className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Event Date</label>
-            <input
-              type="date"
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Event Time</label>
-            <input
-              type="time"
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Duration (hours)</label>
-            <select className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option>1 hour</option>
-              <option>2 hours</option>
-              <option>3 hours</option>
-              <option>4+ hours</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Event Type</label>
-            <select className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option>Wedding</option>
-              <option>Church Service</option>
-              <option>Corporate Event</option>
-              <option>Birthday Party</option>
-              <option>Other</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
-            <input
-              type="text"
-              placeholder="Event location"
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Special Requests</label>
-            <textarea
-              rows={3}
-              placeholder="Any special songs or requirements..."
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div className="bg-gray-50 rounded-lg p-4">
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">Estimated Cost (2 hours):</span>
-              <span className="text-2xl font-bold text-blue-600">₦{profile.hourlyRate * 2}</span>
-            </div>
-          </div>
-          <div className="flex space-x-3">
-            <button
-              type="button"
-              onClick={() => setShowBookingModal(false)}
-              className="flex-1 px-4 py-3 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-            >
-              Send Booking Request
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
+  const [followed, setFollowed] = useState(false);
+
+  // Toggle like for a post
+  const toggleLike = (id) => {
+    setPosts(posts.map(post => 
+      post.id === id ? { ...post, liked: !post.liked, likes: post.liked ? post.likes - 1 : post.likes + 1 } : post
+    ));
+  };
+
+  // Increment comment count (for demo purposes, just increases number)
+  const addComment = (id) => {
+    setPosts(posts.map(post =>
+      post.id === id ? { ...post, comments: post.comments + 1 } : post
+    ));
+  };
+
+  // Increment share count
+  const sharePost = (id) => {
+    setPosts(posts.map(post =>
+      post.id === id ? { ...post, shares: post.shares + 1 } : post
+    ));
+  };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Back Button */}
-      <button
-        onClick={onBack}
-        className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 mb-6"
-      >
-        <ArrowLeft className="w-5 h-5" />
-        <span>Back to Search</span>
-      </button>
+    <div className="min-h-screen bg-gray-100">
+     
+  
 
-      {/* Profile Header */}
-      <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
-        <div className="relative h-64 md:h-80">
-          <img
-            src={profile.coverImage || profile.profileImage}
-            alt={profile.name}
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-          <div className="absolute bottom-6 left-6 right-6">
-            <div className="flex flex-col md:flex-row md:items-end md:space-x-6">
-              <img
-                src={profile.profileImage}
-                alt={profile.name}
-                className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white object-cover"
-              />
-              <div className="mt-4 md:mt-0 flex-1">
-                <div className="flex items-center space-x-3 mb-2">
-                  <h1 className="text-2xl md:text-3xl font-bold text-white">{profile.name}</h1>
-                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    profile.type === 'individual' 
-                      ? 'bg-blue-500 text-white' 
-                      : 'bg-purple-500 text-white'
-                  }`}>
-                    {profile.type === 'individual' ? 'Individual' : 'Team/Band'}
-                  </span>
-                </div>
-                <div className="flex items-center space-x-4 text-white/90">
-                  <div className="flex items-center space-x-1">
-                    <MapPin className="w-4 h-4" />
-                    <span>{profile.location}</span>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    <span>{profile.rating} ({profile.reviewCount} reviews)</span>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <Users className="w-4 h-4" />
-                    <span>{profile.completedGigs} gigs completed</span>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-4 md:mt-0 flex space-x-3">
-                <button className="p-3 bg-white/20 backdrop-blur-sm rounded-full text-white hover:bg-white/30 transition-colors">
-                  <Heart className="w-5 h-5" />
-                </button>
-                <button className="p-3 bg-white/20 backdrop-blur-sm rounded-full text-white hover:bg-white/30 transition-colors">
-                  <Share2 className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
+      {/* Cover Photo */}
+      <div className="bg-white">
+        <div className="max-w-5xl mx-auto">
+          <div className="h-80 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 relative">
+            <button className="absolute bottom-4 right-4 bg-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 hover:bg-gray-50 transition">
+              <Camera className="w-4 h-4" />
+              <span className="text-sm font-medium">Edit Cover Photo</span>
+            </button>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Main Content */}
-        <div className="lg:col-span-2 space-y-8">
-          {/* About */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">About</h2>
-            <p className="text-gray-600 leading-relaxed mb-4">{profile.bio}</p>
-            
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">{profile.experience}</div>
-                <div className="text-gray-500 text-sm">Years Experience</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">₦{profile.hourlyRate}</div>
-                <div className="text-gray-500 text-sm">Per Hour</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">{profile.completedGigs}</div>
-                <div className="text-gray-500 text-sm">Gigs Done</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">{profile.rating}</div>
-                <div className="text-gray-500 text-sm">Rating</div>
+      {/* Profile Info Bar */}
+      <div className="bg-white border-b border-gray-200 shadow-sm">
+        <div className="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center sm:items-end gap-4 -mt-8 pb-4">
+          <div className="relative">
+            <div className="w-40 h-40 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 border-4 border-white shadow-xl flex items-center justify-center">
+              <Music className="w-20 h-20 text-white" />
+            </div>
+            <button className="absolute bottom-2 right-2 bg-gray-200 p-2 rounded-full hover:bg-gray-300 transition">
+              <Camera className="w-4 h-4" />
+            </button>
+          </div>
+
+          <div className="flex-1 text-center sm:text-left mb-2">
+            <h1 className="text-3xl font-bold text-gray-900">Alex Rivera</h1>
+            <p className="text-gray-600">1.2K followers · 834 following</p>
+          </div>
+
+          <div className="flex gap-2 mb-2">
+            <button 
+              onClick={() => setFollowed(!followed)} 
+              className={`px-6 py-2 rounded-lg font-semibold ${followed ? 'bg-gray-200 text-gray-900 hover:bg-gray-300' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+            >
+              {followed ? 'Following' : 'Follow'}
+            </button>
+            <button className="px-6 py-2 bg-gray-200 text-gray-900 rounded-lg font-semibold hover:bg-gray-300 transition">Message</button>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content Area */}
+      <div className="max-w-5xl mx-auto px-4 py-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {/* Left Sidebar - Intro */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-lg shadow p-4 mb-4">
+              <h2 className="text-xl font-bold mb-4">Intro</h2>
+              <p className="text-gray-700 text-center mb-4">Multi-instrumentalist & Producer | Jazz & Blues Enthusiast | Available for Sessions & Live Shows</p>
+              <div className="space-y-3 text-sm">
+                <div className="flex items-center gap-2 text-gray-600"><Music className="w-4 h-4" /><span>Plays Guitar, Piano, Bass</span></div>
+                <div className="flex items-center gap-2 text-gray-600"><Calendar className="w-4 h-4" /><span>12 Years Experience</span></div>
+                <div className="flex items-center gap-2 text-gray-600"><MapPin className="w-4 h-4" /><span>Los Angeles, CA</span></div>
+                <div className="flex items-center gap-2 text-gray-600"><Mail className="w-4 h-4" /><span>alex.rivera@email.com</span></div>
               </div>
             </div>
 
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-3">Instruments & Skills</h3>
+            {/* Skills */}
+            <div className="bg-white rounded-lg shadow p-4">
+              <h2 className="text-xl font-bold mb-4">Skills</h2>
               <div className="flex flex-wrap gap-2">
-                {profile.instruments.map((instrument) => (
-                  <span
-                    key={instrument}
-                    className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium"
-                  >
-                    {instrument}
-                  </span>
+                {["Live Performance", "Studio Recording", "Music Production", "Song Arrangement", "Teaching", "Session Work"].map((skill, index) => (
+                  <span key={index} className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">{skill}</span>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* Video Portfolio */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Video Portfolio</h2>
-            <div className="space-y-4">
-              <div className="relative bg-gray-900 rounded-lg overflow-hidden aspect-video">
-                <img
-                  src={`https://images.pexels.com/photos/1105666/pexels-photo-1105666.jpeg?auto=compress&cs=tinysrgb&w=800`}
-                  alt="Video thumbnail"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <button className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center hover:bg-white transition-colors">
-                    <Play className="w-6 h-6 text-gray-800 ml-1" />
-                  </button>
-                </div>
-                <div className="absolute bottom-4 left-4 right-4">
-                  <h3 className="text-white font-medium">Live Performance - Gospel Medley</h3>
-                  <p className="text-white/80 text-sm">Wedding ceremony performance</p>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {[1, 2, 3, 4].map((index) => (
-                  <div key={index} className="relative bg-gray-900 rounded-lg overflow-hidden aspect-video cursor-pointer group">
-                    <img
-                      src={`https://images.pexels.com/photos/${1105666 + index}/pexels-photo-${1105666 + index}.jpeg?auto=compress&cs=tinysrgb&w=400`}
-                      alt={`Video ${index}`}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-8 h-8 bg-white/90 rounded-full flex items-center justify-center">
-                        <Play className="w-4 h-4 text-gray-800 ml-0.5" />
-                      </div>
+          {/* Right Content - Posts */}
+          <div className="lg:col-span-2 space-y-4">
+            {/* Posts Feed */}
+            {posts.map((post) => (
+              <div key={post.id} className="bg-white rounded-lg shadow">
+                {/* Post Header */}
+                <div className="p-4 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+                      <Music className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">Alex Rivera</h3>
+                      <p className="text-xs text-gray-500">{post.timestamp}</p>
                     </div>
                   </div>
-                ))}
-              </div>
-            </div>
-          </div>
+                  <button className="p-2 hover:bg-gray-100 rounded-full"><MoreHorizontal className="w-5 h-5 text-gray-600" /></button>
+                </div>
 
-          {/* Courses */}
-          {profile.courses && profile.courses.length > 0 && (
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Available Courses</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {profile.courses.map((course) => (
-                  <div key={course.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                    <h3 className="font-semibold text-gray-900 mb-2">{course.title}</h3>
-                    <p className="text-gray-600 text-sm mb-3">{course.description}</p>
-                    <div className="flex items-center justify-between">
-                      <div className="text-sm text-gray-500">
-                        <span>{course.duration} • {course.level}</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-lg font-bold text-blue-600">₦{course.price}</span>
-                        <button
-                          onClick={() => {
-                            setSelectedCourse(course);
-                            setShowCourseModal(true);
-                          }}
-                          className="px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
-                        >
-                          Buy Course
-                        </button>
-                      </div>
-                    </div>
+                {/* Post Content */}
+                <div className="px-4 pb-3">
+                  <p className="text-gray-900">{post.content}</p>
+                </div>
+
+                {/* Post Actions */}
+                <div className="px-4 py-2">
+                  <div className="flex justify-between text-sm text-gray-600 mb-2">
+                    <span>{post.likes} likes</span>
+                    <span>{post.comments} comments · {post.shares} shares</span>
                   </div>
-                ))}
-              </div>
-            </div>
-          )}
-        
-        </div>
-        {/* Sidebar */}
-        <div className="space-y-6">
-          {/* Quick Actions */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h3 className="font-bold text-gray-900 mb-4">Quick Actions</h3>
-            <div className="space-y-3">
-              <button
-                onClick={() => setShowBookingModal(true)}
-                className="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center justify-center space-x-2"
-              >
-                <Calendar className="w-5 h-5" />
-                <span>Book Now</span>
-              </button>
-              
-              <button className="w-full px-4 py-3 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium flex items-center justify-center space-x-2">
-                <MessageCircle className="w-5 h-5" />
-                <span>Send Message</span>
-              </button>
-              
-              <button className="w-full px-4 py-3 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium flex items-center justify-center space-x-2">
-                <Phone className="w-5 h-5" />
-                <span>Call</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Availability */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h3 className="font-bold text-gray-900 mb-4">Availability</h3>
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">This Week</span>
-                <span className="text-green-600 font-medium">Available</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Next Week</span>
-                <span className="text-green-600 font-medium">Available</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Weekends</span>
-                <span className="text-yellow-600 font-medium">Limited</span>
-              </div>
-            </div>
-            <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-              <p className="text-blue-800 text-sm">
-                <Clock className="w-4 h-4 inline mr-1" />
-                Usually responds within 2 hours
-              </p>
-            </div>
-          </div>
-
-          {/* Pricing */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h3 className="font-bold text-gray-900 mb-4">Pricing</h3>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Hourly Rate</span>
-                <span className="font-bold text-xl text-blue-600">₦{profile.hourlyRate}</span>
-              </div>
-              <div className="text-gray-500 text-sm">
-                <p>• Minimum 2 hours booking</p>
-                <p>• Travel costs may apply</p>
-                <p>• Equipment included</p>
-              </div>
-              <div className="border-t pt-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Estimated (3 hours)</span>
-                  <span className="font-bold text-gray-900">₦{profile.hourlyRate * 3}</span>
+                  <div className="flex gap-1 pt-2 border-t border-gray-200">
+                    <button onClick={() => toggleLike(post.id)} className={`flex-1 flex items-center justify-center gap-2 py-2 hover:bg-gray-100 rounded-lg transition ${post.liked ? 'text-blue-600' : ''}`}>
+                      <Heart className="w-5 h-5" />
+                      <span className="font-semibold">Like</span>
+                    </button>
+                    <button onClick={() => addComment(post.id)} className="flex-1 flex items-center justify-center gap-2 py-2 hover:bg-gray-100 rounded-lg transition">
+                      <MessageCircle className="w-5 h-5" />
+                      <span className="font-semibold">Comment</span>
+                    </button>
+                    <button onClick={() => sharePost(post.id)} className="flex-1 flex items-center justify-center gap-2 py-2 hover:bg-gray-100 rounded-lg transition">
+                      <Share2 className="w-5 h-5" />
+                      <span className="font-semibold">Share</span>
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* Contact Info */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h3 className="font-bold text-gray-900 mb-4">Contact Information</h3>
-            <div className="space-y-3">
-              <div className="flex items-center space-x-3">
-                <Phone className="w-5 h-5 text-gray-400" />
-                <span className="text-gray-600">+234 906 370 4342</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <Mail className="w-5 h-5 text-gray-400" />
-                <span className="text-gray-600">davidhabakkuk984@gmail.com</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <MapPin className="w-5 h-5 text-gray-400" />
-                <span className="text-gray-600">{profile.location}</span>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
-
-      {/* Booking Modal */}
-      {showBookingModal && <BookingModal />}
     </div>
   );
-};
-
-export default ProfilePage;
+}
