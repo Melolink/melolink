@@ -137,7 +137,7 @@ const handleProfileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow p-4 mb-4">
               <h2 className="text-xl font-bold mb-4">Intro</h2>
-              <p className="text-gray-700 text-center mb-4">Multi-instrumentalist & Producer | Jazz & Blues Enthusiast | Available for Sessions & Live Shows</p>
+              <p className="text-gray-700 text-center mb-4">Multi-instrumentalist & Producer | Jazz & Blues Enthusiast | Available for Sessions & Live Shows | Afro</p>
               <div className="space-y-3 text-sm">
                 <div className="flex items-center gap-2 text-gray-600"><Music className="w-4 h-4" /><span>Plays Guitar, Piano, Bass</span></div>
                 <div className="flex items-center gap-2 text-gray-600"><Calendar className="w-4 h-4" /><span>12 Years Experience</span></div>
